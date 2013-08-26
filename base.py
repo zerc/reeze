@@ -7,7 +7,7 @@ import urlparse as u
 import pickle
 
 RE_FLAGS = re.I | re.U
-BACKENDS = {}  # contain backends
+BACKENDS = {}  # backends container
 
 
 ## {{{ http://code.activestate.com/recipes/576563/ (r1)
@@ -27,13 +27,21 @@ def cached_property(f):
 ## end of http://code.activestate.com/recipes/576563/ }}}
 
 
+def get_backend(name):
+    try:
+        return BACKENDS[name]
+    except KeyError:
+        return None
+
+
 class Registered(type):
     """
     Simple metaclass for registering backends.
     """
     def __init__(self, name, bases, dict):
         type.__init__(self, name, bases, dict)
-        BACKENDS[name.lower()] = self
+        if name != 'BaseBackend':
+            BACKENDS[name.lower()] = self
 
 
 class BaseItem(object):
@@ -55,6 +63,8 @@ class BaseItem(object):
 
 
 class BaseBackend(object):
+    __metaclass__ = Registered
+
     url = None
     items_urls_regexp = None
     items_titles_regexp = None

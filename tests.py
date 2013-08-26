@@ -26,11 +26,12 @@ class TestMixin(object):
         self.tmp_filename = '%s_less_items.html' % self.prefix
 
 
-class GigantsTestBackend(TestMixin, backends.Gigants):
+## TODO: do it dynamic
+class GigantsTestBackend(TestMixin, base.get_backend('gigants')):
     pass
 
 
-class DeviantTestBackend(TestMixin, backends.Deviant):
+class DeviantTestBackend(TestMixin, base.get_backend('deviant')):
     pass
 
 
