@@ -23,7 +23,6 @@ Run tests:
 ### This is first pre-pre-pre-alpha version. Use it in own risk. Issues are welcome ofc.
 
 ### TODO
-* Fetch data from all backends
 * Add some notifier functions (to email, ubuntu popup etc)
 * Callback functions (who know what do with new items)
 * Add auth support

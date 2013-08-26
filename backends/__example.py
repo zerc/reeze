@@ -1,23 +1,28 @@
 # coding: utf-8
+"""
+Example of backend file
+"""
 import re
 import base
 
 
-## deviantart
-class DeviantItem(base.BaseItem):
+class ExampleItem(base.BaseItem):
     @base.cached_property
     def id(self):
+        """
+        Genereated unique id for per item
+        """
         return int(''.join(re.findall('\d+', self.url)))
 
 
-class Deviant(base.BaseBackend):
-    item_cls = DeviantItem
+class Example(base.BaseBackend):
+    item_cls = ExampleItem
 
-    url = 'http://yuumei.deviantart.com/gallery/'
+    url = "Place where stored items"
 
     items_urls_regexp = re.compile(
-        r'(http://yuumei.deviantart.com/art/Fisheye-Placebo[\-_\w\d]+)"\s',
+        "Compiled regexp items urls"
         base.RE_FLAGS)
 
     items_titles_regexp = re.compile(
-        r'class="details"\s?>.*?<b>(.*?)</b>', base.RE_FLAGS)
+        "Compiled regexp for item titles", base.RE_FLAGS)

@@ -4,6 +4,21 @@ import base
 import backends
 
 
+def process(cls):
+    print 'Process %s' % cls.__name__
+
+    g = cls()
+    new_items = g.new_items
+
+    if not new_items:
+        print "No new items"
+    else:
+        for x in new_items:
+            print x.url
+
+    print ''
+
+
 def main(backend_name):
     if backend_name:
         backend = base.get_backend(backend_name)
@@ -13,21 +28,6 @@ def main(backend_name):
             return
 
     backends = [backend] if backend_name else base.BACKENDS.values()
-
-    def process(cls):
-        print 'Process %s' % cls.__name__
-
-        g = cls()
-        new_items = g.new_items
-
-        if not new_items:
-            print "No new items"
-        else:
-            for x in new_items:
-                print x.url
-
-        print ''
-
     map(process, backends)
 
 
