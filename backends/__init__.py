@@ -1,8 +1,9 @@
 # coding: utf-8
 import os
 
-package_dirname = 'backends'
 
+# auto import all backends from `backends` package
+package_dirname = 'backends'
 for filaneme in os.listdir(package_dirname):
     if filaneme.endswith('.pyc') or \
             filaneme.startswith('__'):

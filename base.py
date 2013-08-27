@@ -7,7 +7,6 @@ import urlparse as u
 import pickle
 
 RE_FLAGS = re.I | re.U
-BACKENDS = {}  # backends container
 
 
 ## {{{ http://code.activestate.com/recipes/576563/ (r1)
@@ -27,11 +26,23 @@ def cached_property(f):
 ## end of http://code.activestate.com/recipes/576563/ }}}
 
 
-def get_backend(name):
-    try:
-        return BACKENDS[name]
-    except KeyError:
-        return None
+class BackendsCache(object):
+    def __init__(self):
+        self._cache = {}
+
+    def add(self, name, backend):
+        self._cache[name] = backend
+
+    def get(self, name):
+        try:
+            return self._cache[name]
+        except KeyError:
+            return None
+
+    def all(self):
+        return self._cache.values()
+
+BACKENDS = BackendsCache()
 
 
 class Registered(type):
@@ -41,7 +52,7 @@ class Registered(type):
     def __init__(self, name, bases, dict):
         type.__init__(self, name, bases, dict)
         if name != 'BaseBackend':
-            BACKENDS[name.lower()] = self
+            BACKENDS.add(name.lower(), self)
 
 
 class BaseItem(object):

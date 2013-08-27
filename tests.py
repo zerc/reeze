@@ -27,11 +27,11 @@ class TestMixin(object):
 
 
 ## TODO: do it dynamic
-class GigantsTestBackend(TestMixin, base.get_backend('gigants')):
+class GigantsTestBackend(TestMixin, base.BACKENDS.get('gigants')):
     pass
 
 
-class DeviantTestBackend(TestMixin, base.get_backend('deviant')):
+class DeviantTestBackend(TestMixin, base.BACKENDS.get('deviant')):
     pass
 
 

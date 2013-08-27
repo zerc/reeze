@@ -12,22 +12,23 @@ def process(cls):
 
     if not new_items:
         print "No new items"
-    else:
-        for x in new_items:
-            print x.url
+        return
+
+    for x in new_items:
+        print x.url
 
     print ''
 
 
 def main(backend_name):
     if backend_name:
-        backend = base.get_backend(backend_name)
+        backend = base.BACKENDS.get(backend_name)
 
         if backend is None:
             print 'Unknow backend %s' % backend_name
             return
 
-    backends = [backend] if backend_name else base.BACKENDS.values()
+    backends = [backend] if backend_name else base.BACKENDS.all()
     map(process, backends)
 
 
