@@ -26,7 +26,7 @@ class TestMixin(object):
         self.tmp_filename = '%s_less_items.html' % self.prefix
 
 
-## TODO: do it dynamic
+## TODO: auto do it
 class GigantsTestBackend(TestMixin, base.BACKENDS.get('gigants')):
     pass
 
@@ -41,7 +41,7 @@ class BaseTestMixin(object):
             os.remove(self.backend.cache_filename)
 
     def test_items(self):
-        for item in self.backend.items:
+        for item in self.backend.get_items():
             self.assertIsInstance(item, base.BaseItem, "Invalid item class")
 
         self.assertNotEqual(item, None)

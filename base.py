@@ -47,12 +47,26 @@ BACKENDS = BackendsCache()
 
 class Registered(type):
     """
-    Simple metaclass for registering backends.
+    Simple metaclass for registering and validate backends.
     """
     def __init__(self, name, bases, dict):
         type.__init__(self, name, bases, dict)
-        if name != 'BaseBackend':
-            BACKENDS.add(name.lower(), self)
+        self.after_init(name, bases, dict)
+
+    def after_init(self, name, bases, dict):
+        if not self.__module__.startswith('backends.'):
+            return
+
+        attrs = ('url', 'items_urls_regexp', 'items_titles_regexp')
+        for i, attr in enumerate(attrs):
+            a = getattr(self, attr, None)
+            if not a:
+                raise AttributeError(
+                    u'%s: need set %s attriute' % (name, attr))
+            if i > 0:
+                setattr(self, attr, re.compile(a, RE_FLAGS))
+
+        BACKENDS.add(name.lower(), self)
 
 
 class BaseItem(object):
@@ -81,11 +95,6 @@ class BaseBackend(object):
     items_titles_regexp = None
     item_cls = BaseItem
 
-    def __init__(self, *args, **kwargs):
-        for n in 'url items_urls_regexp items_titles_regexp'.split(' '):
-            if getattr(self, n) is None:
-                raise NotImplementedError(u'Please set up `%s` attribute!' % n)
-
     @cached_property
     def raw_data(self):
         r = urllib2.urlopen(self.url)
@@ -98,7 +107,7 @@ class BaseBackend(object):
 
     def save(self):
         with open(self.cache_filename, 'wb') as f:
-            pickle.dump(set(x.id for x in self.items), f)
+            pickle.dump(set(x.id for x in self.get_items()), f)
 
     def load(self):
         try:
@@ -112,8 +121,7 @@ class BaseBackend(object):
         parsed_url = u.urlparse(self.url)
         return 'http://%s' % parsed_url.hostname
 
-    @property
-    def items(self):
+    def get_items(self):
         data = self.raw_data
         tmp = {}
         for x in zip(*map(lambda x: getattr(x, 'findall')(data),
@@ -127,13 +135,13 @@ class BaseBackend(object):
     @property
     def new_items(self):
         old_ids = self.load() or set([])
-        ids = set(x.id for x in self.items)
+        ids = set(x.id for x in self.get_items())
         diff = ids - old_ids
 
         if diff:
             self.save()
 
-        return filter(lambda x: x.id in diff, self.items)
+        return filter(lambda x: x.id in diff, self.get_items())
 
     def show_notice(self):
         pass

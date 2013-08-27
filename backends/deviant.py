@@ -15,9 +15,7 @@ class Deviant(base.BaseBackend):
 
     url = 'http://yuumei.deviantart.com/gallery/'
 
-    items_urls_regexp = re.compile(
-        r'(http://yuumei.deviantart.com/art/Fisheye-Placebo[\-_\w\d]+)"\s',
-        base.RE_FLAGS)
+    items_urls_regexp = \
+        r'(http://yuumei.deviantart.com/art/Fisheye-Placebo[\-_\w\d]+)"\s'
 
-    items_titles_regexp = re.compile(
-        r'class="details"\s?>.*?<b>(.*?)</b>', base.RE_FLAGS)
+    items_titles_regexp = r'class="details"\s?>.*?<b>(.*?)</b>'

@@ -20,9 +20,6 @@ class Example(base.BaseBackend):
 
     url = "Place where stored items"
 
-    items_urls_regexp = re.compile(
-        "Compiled regexp items urls"
-        base.RE_FLAGS)
+    items_urls_regexp = "Regexp pattern for find needed urls"
 
-    items_titles_regexp = re.compile(
-        "Compiled regexp for item titles", base.RE_FLAGS)
+    items_titles_regexp = "Regexp pattern for find items titles"
