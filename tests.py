@@ -4,6 +4,7 @@ import re
 import os
 import unittest
 
+import run
 import base
 import backends
 
@@ -12,6 +13,7 @@ class TestMixin(object):
     def __init__(self, *args, **kwargs):
         self.prefix = self.__class__.__name__.lower().split('test')[0]
         self.set_less_items_filename()
+        base.BACKENDS.set(self.prefix, self)  # overwrite backend
         super(TestMixin, self).__init__(*args, **kwargs)
 
     @property
@@ -61,7 +63,7 @@ class BaseTestMixin(object):
             new_items[0], base.BaseItem, "Invalid new item class")
 
 
-class GigantTest(BaseTestMixin, unittest.TestCase):
+class GigantsTest(BaseTestMixin, unittest.TestCase):
     backend = GigantsTestBackend()
     new_item_id = 2402
 
@@ -70,6 +72,24 @@ class DeviantTest(BaseTestMixin, unittest.TestCase):
     backend = DeviantTestBackend()
     new_item_id = 359809568
 
+
+class RunTestCase(unittest.TestCase):
+    def test_get_backend_name(self):
+        cases = (
+            (['run.py'], None),
+            (['run.py', 'a'], 'a'),
+            (['run.py', 'a', 'b'], 'a'),
+        )
+        f = run.get_backend_name
+
+        for cond, result in cases:
+            self.assertEqual(f(cond), result)
+
+    def test_get_backends(self):
+        f = run.get_backends
+        self.assertEqual(len(f(None)), len(base.BACKENDS.all()))
+        self.assertIsNone(f('not_realy_backend'))
+        self.assertIs(f('gigants')[0], base.BACKENDS.get('gigants'))
 
 if __name__ == "__main__":
     unittest.main()

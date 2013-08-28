@@ -20,7 +20,7 @@ def process(cls):
     print ''
 
 
-def main(backend_name):
+def get_backends(backend_name):
     if backend_name:
         backend = base.BACKENDS.get(backend_name)
 
@@ -28,11 +28,18 @@ def main(backend_name):
             print 'Unknow backend %s' % backend_name
             return
 
-    backends = [backend] if backend_name else base.BACKENDS.all()
-    map(process, backends)
+    return [backend] if backend_name else base.BACKENDS.all()
+
+
+def get_backend_name(argv):
+    backend_name = argv[1:]
+    backend_name = backend_name[0] if backend_name else None
+    return backend_name
 
 
 if __name__ == "__main__":
-    cls_name = sys.argv[1:]
-    cls_name = cls_name[0] if cls_name else None
-    main(cls_name)
+    backend_name = get_backend_name(sys.argv)
+    backends = get_backends(backend_name)
+
+    if backends:
+        map(process, backends)

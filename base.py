@@ -30,7 +30,7 @@ class BackendsCache(object):
     def __init__(self):
         self._cache = {}
 
-    def add(self, name, backend):
+    def set(self, name, backend):
         self._cache[name] = backend
 
     def get(self, name):
@@ -66,7 +66,7 @@ class Registered(type):
             if i > 0:
                 setattr(self, attr, re.compile(a, RE_FLAGS))
 
-        BACKENDS.add(name.lower(), self)
+        BACKENDS.set(name.lower(), self)
 
 
 class BaseItem(object):
@@ -97,7 +97,7 @@ class BaseBackend(object):
 
     @cached_property
     def raw_data(self):
-        r = urllib2.urlopen(self.url)
+        r = urllib2.urlopen(self.url)  # build custom head (user-agent etc)
         return r.read()
 
     @property
