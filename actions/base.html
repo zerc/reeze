@@ -1,0 +1,22 @@
+<html>
+<head>
+  <title>Reeze :: Main page</title>
+</head>
+<body>
+{%- macro render_item(item) %}
+  <a href="{{ item.url }}" target="_blank">{{ item.title }}</a><br>
+{%- endmacro %}
+
+{% macro render_backend(backend) %}
+  <h2>{{ backend.__class__.__name__ }}</h2>
+  {%- for item in backend.get_items() -%}
+    {{ render_item(item) }}
+  {%- endfor -%}
+{% endmacro %}
+
+{%- for backend in backends %}
+  {{ render_backend(backend) }}
+{%- endfor %}
+
+</body>
+</html>

@@ -1,23 +1,15 @@
+#!venv/bin/python
 # coding: utf-8
 import sys
 import base
 import backends
+import actions
 
 
-def process(cls):
-    print 'Process %s' % cls.__name__
-
-    g = cls()
-    new_items = g.new_items
-
-    if not new_items:
-        print "No new items"
-        return
-
-    for x in new_items:
-        print x.url
-
-    print ''
+def get_backend_name(argv):
+    backend_name = argv[1:]
+    backend_name = backend_name[0] if backend_name else None
+    return backend_name
 
 
 def get_backends(backend_name):
@@ -31,15 +23,9 @@ def get_backends(backend_name):
     return [backend] if backend_name else base.BACKENDS.all()
 
 
-def get_backend_name(argv):
-    backend_name = argv[1:]
-    backend_name = backend_name[0] if backend_name else None
-    return backend_name
-
-
 if __name__ == "__main__":
     backend_name = get_backend_name(sys.argv)
     backends = get_backends(backend_name)
-
-    if backends:
-        map(process, backends)
+    # TODO: add choice for action
+    # actions.JustPrint(backends)
+    actions.ToHtml([b() for b in backends])

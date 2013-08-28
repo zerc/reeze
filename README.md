@@ -8,6 +8,9 @@ Simple:
 
     git clone git@github.com:zerc/reeze.git reeze
     cd reeze
+    virtualenv venv
+    . venv/bin/activate
+    pip install -r req.txt
     
 
 Specify backend for you site (see included examples) in `backends.py`.
@@ -21,8 +24,3 @@ Run tests:
     python tests.py
 
 ### This is first pre-pre-pre-alpha version. Use it in own risk. Issues are welcome ofc.
-
-### TODO
-* Add some notifier functions (to email, ubuntu popup etc)
-* Callback functions (who know what do with new items)
-* Add auth support

@@ -3,3 +3,4 @@ venv
 tmp
 *.sublime-project
 *.sublime-workspace
+*index.html

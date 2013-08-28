@@ -98,7 +98,7 @@ class BaseBackend(object):
     @cached_property
     def raw_data(self):
         r = urllib2.urlopen(self.url)  # build custom head (user-agent etc)
-        return r.read()
+        return r.read().decode('utf-8')
 
     @property
     def cache_filename(self):

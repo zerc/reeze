@@ -7,6 +7,7 @@ import unittest
 import run
 import base
 import backends
+import actions
 
 
 class TestMixin(object):
@@ -19,7 +20,7 @@ class TestMixin(object):
     @property
     def raw_data(self):
         with open(os.path.join('for_tests', self.tmp_filename), 'r') as r:
-            return r.read()
+            return r.read().decode('utf-8')
 
     def set_items_filename(self):
         self.tmp_filename = '%s_items.html' % self.prefix
@@ -90,6 +91,24 @@ class RunTestCase(unittest.TestCase):
         self.assertEqual(len(f(None)), len(base.BACKENDS.all()))
         self.assertIsNone(f('not_realy_backend'))
         self.assertIs(f('gigants')[0], base.BACKENDS.get('gigants'))
+
+
+class ActionsTestCase(unittest.TestCase):
+    def test_to_html(self):
+        backends = base.BACKENDS.all()
+        output_filename = 'test_index.html'
+        actions.ToHtml(backends, output_filename)
+
+        self.assertTrue(os.path.exists(output_filename))
+
+        with open(output_filename, 'r') as f:
+            data = f.read().decode('utf-8')
+            items_pairs = (list(b.get_items()) for b in backends)
+            for item in reduce(list.__add__, items_pairs):
+                self.assertIn(item.url, data)
+
+        os.remove(output_filename)
+
 
 if __name__ == "__main__":
     unittest.main()
