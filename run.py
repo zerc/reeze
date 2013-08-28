@@ -27,5 +27,5 @@ if __name__ == "__main__":
     backend_name = get_backend_name(sys.argv)
     backends = get_backends(backend_name)
     # TODO: add choice for action
-    # actions.JustPrint(backends)
-    actions.ToHtml([b() for b in backends])
+    actions.JustPrint(backends)
+    # actions.ToHtml([b() for b in backends])
