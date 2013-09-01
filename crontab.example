@@ -1,0 +1,2 @@
+57 * * * 7 /home/zero13cool/repos/reeze/venv/bin/python /home/zero13cool/repos/reeze/run.py --output_method ToHtml
+
