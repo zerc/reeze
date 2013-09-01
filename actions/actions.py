@@ -3,6 +3,9 @@ import os
 from jinja2 import Environment, FileSystemLoader
 
 
+__ALL__ = ('JustPrint', 'ToHtml')
+
+
 class BaseAction(object):
     def __init__(self, backends, *args, **kwargs):
         for backend in backends:
@@ -17,11 +20,10 @@ class BaseAction(object):
 
 
 class JustPrint(BaseAction):
-    def process_backend(self, cls):
-        print 'Process %s' % cls.__name__
+    def process_backend(self, backend):
+        print 'Process %s' % backend
 
-        g = cls()
-        new_items = g.new_items
+        new_items = backend.new_items
 
         if not new_items:
             print "No new items"

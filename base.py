@@ -31,7 +31,7 @@ class BackendsCache(object):
         self._cache = {}
 
     def set(self, name, backend):
-        self._cache[name] = backend
+        self._cache[name] = backend()
 
     def get(self, name):
         try:
@@ -39,8 +39,15 @@ class BackendsCache(object):
         except KeyError:
             return None
 
+    def filter(self, names):
+        return filter(None, map(self.get, names))
+
     def all(self):
         return self._cache.values()
+
+    def all_names(self):
+        return self._cache.keys()
+
 
 BACKENDS = BackendsCache()
 
@@ -95,6 +102,10 @@ class BaseBackend(object):
     items_titles_regexp = None
     item_cls = BaseItem
 
+    @property
+    def name(self):
+        return self.__class__.__name__.lower()
+
     @cached_property
     def raw_data(self):
         r = urllib2.urlopen(self.url)  # build custom head (user-agent etc)
@@ -102,8 +113,7 @@ class BaseBackend(object):
 
     @property
     def cache_filename(self):
-        return os.path.join(
-            'tmp', '%s.cache' % self.__class__.__name__.lower())
+        return os.path.join('tmp', '%s.cache' % self.name)
 
     def save(self):
         with open(self.cache_filename, 'wb') as f:
@@ -142,6 +152,12 @@ class BaseBackend(object):
             self.save()
 
         return filter(lambda x: x.id in diff, self.get_items())
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
 
     def show_notice(self):
         pass

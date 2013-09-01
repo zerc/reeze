@@ -14,7 +14,6 @@ class TestMixin(object):
     def __init__(self, *args, **kwargs):
         self.prefix = self.__class__.__name__.lower().split('test')[0]
         self.set_less_items_filename()
-        base.BACKENDS.set(self.prefix, self)  # overwrite backend
         super(TestMixin, self).__init__(*args, **kwargs)
 
     @property
@@ -30,15 +29,24 @@ class TestMixin(object):
 
 
 ## TODO: auto do it
-class GigantsTestBackend(TestMixin, base.BACKENDS.get('gigants')):
+class GigantsTestBackend(TestMixin, base.BACKENDS.get('gigants').__class__):
     pass
 
 
-class DeviantTestBackend(TestMixin, base.BACKENDS.get('deviant')):
+class DeviantTestBackend(TestMixin, base.BACKENDS.get('deviant').__class__):
     pass
+
+
+base.BACKENDS.set('gigants', GigantsTestBackend)
+base.BACKENDS.set('deviant', DeviantTestBackend)
 
 
 class BaseTestMixin(object):
+    def __init__(self, *args, **kwargs):
+        super(BaseTestMixin, self).__init__(*args, **kwargs)
+        backend_name = self.__class__.__name__.lower().split('test')[0]
+        self.backend = base.BACKENDS.get(backend_name)
+
     def setUp(self):
         if os.path.exists(self.backend.cache_filename):
             os.remove(self.backend.cache_filename)
@@ -65,32 +73,11 @@ class BaseTestMixin(object):
 
 
 class GigantsTest(BaseTestMixin, unittest.TestCase):
-    backend = GigantsTestBackend()
     new_item_id = 2402
 
 
 class DeviantTest(BaseTestMixin, unittest.TestCase):
-    backend = DeviantTestBackend()
     new_item_id = 359809568
-
-
-class RunTestCase(unittest.TestCase):
-    def test_get_backend_name(self):
-        cases = (
-            (['run.py'], None),
-            (['run.py', 'a'], 'a'),
-            (['run.py', 'a', 'b'], 'a'),
-        )
-        f = run.get_backend_name
-
-        for cond, result in cases:
-            self.assertEqual(f(cond), result)
-
-    def test_get_backends(self):
-        f = run.get_backends
-        self.assertEqual(len(f(None)), len(base.BACKENDS.all()))
-        self.assertIsNone(f('not_realy_backend'))
-        self.assertIs(f('gigants')[0], base.BACKENDS.get('gigants'))
 
 
 class ActionsTestCase(unittest.TestCase):
