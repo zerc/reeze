@@ -4,7 +4,7 @@ import os
 
 # auto import all backends from `backends` package
 package_dirname = 'backends'
-for filaneme in os.listdir(package_dirname):
+for filaneme in os.listdir(os.path.dirname(__file__)):
     if filaneme.endswith('.pyc') or \
             filaneme.startswith('__'):
         continue
