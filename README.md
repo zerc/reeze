@@ -15,9 +15,13 @@ Simple:
 
 Specify backend for you site (see included examples) in `backends.py`.
 
-Run in `reeze` folder:
+Run `reeze` with default options (using all backends and print new items to stdout):
 
-    python run.py [backend_name]
+    python run.py
+
+List of available options:
+
+    python run.py -h
 
 Run tests:
     
